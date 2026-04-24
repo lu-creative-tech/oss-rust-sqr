@@ -1,5 +1,3 @@
-
-
 pub enum AuthType {
     AzCliToken(String),
     ConnectionString(String),
@@ -15,11 +13,4 @@ pub struct AppContext {
     query: String,
     filters: Vec<Filter>
 }
-
-
-
-
-
-
-
 
