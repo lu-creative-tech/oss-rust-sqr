@@ -1,0 +1,19 @@
+/target/
+
+# JetBrains (IntelliJ, RustRover)
+.idea/
+*.iml
+
+# Visual Studio Code
+.vscode/
+
+# Other Editors
+*.swp
+*~
+.DS_Store
+
+.env
+.env.*
+!.env.example
+
+/doc/
