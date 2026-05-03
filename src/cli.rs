@@ -11,9 +11,9 @@ pub enum ArgAuthType {
 #[derive(Debug)]
 pub struct CliArgs
 {
-    sql_file: PathBuf,
-    filters_file: PathBuf,
-    auth: ArgAuthType
+    pub sql_file: PathBuf,
+    pub filters_file: Option<PathBuf>,
+    pub auth: ArgAuthType
 }
 
 impl CliArgs {
@@ -22,23 +22,22 @@ impl CliArgs {
         let args = CliArgs::get_cli_args();
         
         let sql_file = args
-            .get_one::<PathBuf>("sql_file")
+            .get_one::<PathBuf>("sql-file")
             .cloned()
             .ok_or_else(|| "The report's source query file is required".to_string())?;
 
         let filters_file = args
             .get_one::<PathBuf>("filters")
-            .cloned()
-            .ok_or_else(|| "The JSON file query filters is required".to_string())?;
+            .cloned();
         
         let auth: ArgAuthType;
-        let is_auth_az_cli_tokens = args.get_flag("auth_az_cli_tokens");
+        let is_auth_az_cli_tokens = args.get_flag("auth-az-cli-tokens");
         if is_auth_az_cli_tokens {
             auth = ArgAuthType::UseAzCliToken;
         }
         else {
             let conn_string = args
-                .get_one::<PathBuf>("auth_connection_string")
+                .get_one::<PathBuf>("auth-connection-string")
                 .cloned()
                 .ok_or_else(|| "The connection string is required".to_string())?;
 
