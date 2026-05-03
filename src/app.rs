@@ -13,4 +13,3 @@ pub struct AppContext {
     query: String,
     filters: Vec<Filter>
 }
-
