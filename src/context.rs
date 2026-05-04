@@ -210,13 +210,13 @@ pub async fn from_cli_args(value: crate::cli::CliArgs) -> Result<AppContext, Box
 
         "filter-type": "discrete",
         "filter-name": "@period",
-        "filter-value": ["01/2026", "02/2026", "03/2026"]
+        "filter-value-str": ["01/2026", "02/2026", "03/2026"]
     },
     { // Multiple static filters are allowed
     
         "filter-type": "static",
         "filter-name": "@document_type",
-        "filter-value": "CreditNote"
+        "filter-value-str": "CreditNote"
     }
 ]
 */
