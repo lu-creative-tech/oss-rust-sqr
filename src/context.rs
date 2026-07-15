@@ -98,7 +98,6 @@ fn map_static_value(static_value: StaticValueDto, position: u32) -> Result<app::
         StaticValueDto::DateTime { value } => app::StaticValue::DateTime(value),
         StaticValueDto::Uuid { value } => app::StaticValue::Uuid(value),
         StaticValueDto::Unknown(v) => return Err(format!("Could not parse static filter value at position {} {:?}", position, v).into()),
-        _ => return Err(format!("Could not parse static filter value at {}", position).into())
     };
 
     Ok(result)
@@ -112,7 +111,6 @@ fn map_discrete_value(discrete_value: DiscreteValueDto, position: u32) -> Result
         DiscreteValueDto::DateTime { values } => app::DiscreteValue::DateTime(values),
         DiscreteValueDto::Uuid { values } => app::DiscreteValue::Uuid(values),
         DiscreteValueDto::Unknown(v) => return Err(format!("Could not parse discrete filter value at position {} {:?}", position, v).into()),
-        _ => return Err(format!("Could not parse discrete filter value at position {}", position).into())
     };
 
     Ok(result)
@@ -154,11 +152,10 @@ async fn validate_and_get_filters(filters_file: &mut tokio::fs::File) -> Result<
     Ok(result)
 }
 
-async fn get_az_cli_token() -> Result<String, Box<dyn std::error::Error>> {
+async fn get_az_cli_token(az_token: Option<String>) -> Result<String, Box<dyn std::error::Error>> {
 
-    // TODO: add tenant_id as an optional cli arg
     let options = AzureCliCredentialOptions {
-        // tenant_id: Some(az_tenant_id),
+        tenant_id: az_token,
         ..Default::default()
     };
 
@@ -171,20 +168,20 @@ async fn get_az_cli_token() -> Result<String, Box<dyn std::error::Error>> {
     Ok(token_response.token.secret().to_string())
 }
 
-pub async fn from_cli_args(value: crate::cli::CliArgs) -> Result<AppContext, Box<dyn std::error::Error>> {
+pub async fn from_cli_args(cli_args: crate::cli::CliArgs) -> Result<AppContext, Box<dyn std::error::Error>> {
 
     // TODO: define max_sql_file, max_filters_file, max_conn_string as cli args and apply good defaults
-    let mut sql_file = validate_and_open_file("sql file", &value.sql_file, 10).await?;
+    let mut sql_file = validate_and_open_file("sql file", &cli_args.sql_file, 10).await?;
     let sql_query = get_sql_query(&mut sql_file).await?;
 
     let mut app_filters: Vec<app::Filter> = vec![];
-    if let Some(filters_path) = value.filters_file {
+    if let Some(filters_path) = cli_args.filters_file {
         let mut filters_file = validate_and_open_file("filters file", &filters_path, 100).await?;
         app_filters = validate_and_get_filters(&mut filters_file).await?;
     }
 
-    let auth_type = match value.auth {
-        ArgAuthType::UseAzCliToken => app::AuthType::AzCliToken(get_az_cli_token().await?),
+    let auth_type = match cli_args.auth {
+        ArgAuthType::UseAzCliToken(az_tenant) => app::AuthType::AzCliToken(get_az_cli_token(az_tenant).await?),
         ArgAuthType::UseConnectionString(path) => {
             let mut conn_string_file = validate_and_open_file("connection string", &path, 1).await?;
             let mut conn_string = String::new();

@@ -4,7 +4,7 @@ use clap::{ArgAction, ArgGroup, ArgMatches, arg, command, value_parser};
 
 #[derive(Debug)]
 pub enum ArgAuthType {
-    UseAzCliToken,
+    UseAzCliToken(Option<String>),
     UseConnectionString(PathBuf)
 }
 
@@ -32,10 +32,17 @@ impl CliArgs {
         
         let auth: ArgAuthType;
         let is_auth_az_cli_tokens = args.get_flag("auth-az-cli-tokens");
+
         if is_auth_az_cli_tokens {
-            auth = ArgAuthType::UseAzCliToken;
+
+            let az_token = args
+                .get_one::<String>("az-tenant")
+                .cloned();
+
+            auth = ArgAuthType::UseAzCliToken(az_token);
         }
         else {
+            
             let conn_string = args
                 .get_one::<PathBuf>("auth-connection-string")
                 .cloned()
@@ -74,6 +81,12 @@ impl CliArgs {
                 arg!(--"auth-az-cli-tokens")
                     .required(false)
                     .action(ArgAction::SetTrue)
+            )
+            .arg(
+                arg!(--"az-tenant" <TENANT> "Optional Azure tenant ID when using az cli auth.")
+                    .required(false)
+                    .value_parser(value_parser!(String))
+                    .requires("auth-az-cli-tokens")
             )
             .group(
                 ArgGroup::new("auth")
