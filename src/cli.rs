@@ -35,11 +35,11 @@ impl CliArgs {
 
         if is_auth_az_cli_tokens {
 
-            let az_token = args
+            let az_tenant_id = args
                 .get_one::<String>("az-tenant")
                 .cloned();
 
-            auth = ArgAuthType::UseAzCliToken(az_token);
+            auth = ArgAuthType::UseAzCliToken(az_tenant_id);
         }
         else {
             
