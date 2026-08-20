@@ -1,0 +1,32 @@
+[
+    {
+        "filter-type": "discrete",
+        "filter-name": "@period",
+        "filter-value-str": ["01/2026", "02/2026", "03/2026"]
+    },
+    {
+        "filter-type": "static",
+        "filter-name": "@document_type",
+        "filter-value-str": "CreditNote"
+    },
+    {
+        "filter-type": "static",
+        "filter-name": "@amount_bigger_than",
+        "filter-value-dec": 93.5434
+    },
+    {
+        "filter-type": "static",
+        "filter-name": "@date",
+        "filter-value-date": "2026-01-01"
+    },
+    {
+        "filter-type": "static",
+        "filter-name": "@date_time",
+        "filter-value-datetime": "2026-01-01T21:32:12"
+    },
+    {
+        "filter-type": "static",
+        "filter-name": "@invoice_id",
+        "filter-value-uuid": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    }
+]

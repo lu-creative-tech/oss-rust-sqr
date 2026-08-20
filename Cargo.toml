@@ -27,3 +27,7 @@ rustflags = ["-C", "target-feature=+crt-static"]
 # Tell cargo-xwin to use the LLVM archiver available on macOS
 ar = "llvm-ar"
 linker = "lld-link"
+
+[profile.dev]
+debug = 1  # Reduces debug info (line numbers/names only, no full types)
+
